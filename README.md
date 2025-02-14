@@ -31,5 +31,5 @@ git push --set-upstream origin main
 ```shell
 rm -rf dist && pnpm build
 npx serve dist -l 50862 --single
-
+github action vite只能./
 ```

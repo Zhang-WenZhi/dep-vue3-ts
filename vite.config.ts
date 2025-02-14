@@ -24,9 +24,9 @@ export default defineConfig({
       }
     }
   },
-  base: '/dep-vue3-ts/', // 必须与仓库名一致 
+  // base: '/dep-vue3-ts/', // 必须与仓库名一致
   // base: process.env.NODE_ENV === 'production' ? '/dep-vue3-ts/' : './',
-  // base: './', // 核心配置项，控制资源路径 // 本地打包是要这样才能运行 // github用这个没有仓库名访问也可以
+  base: './', // 核心配置项，控制资源路径 // 本地打包是要这样才能运行 // github用这个没有仓库名访问也可以
   build: {
     outDir: 'dist', // 默认构建目录
     // assetsDir: 'assets', // 静态资源目录
