@@ -58,6 +58,6 @@ routes.push({ // 登录页
 })
 
 export default createRouter({
-    history: createWebHistory(), // createWebHashHistory 路径加#号 createWebHistory 路径不加#
+    history: createWebHistory(import.meta.env.BASE_URL), // createWebHashHistory 路径加#号 createWebHistory 路径不加#
     routes: routes,
 });

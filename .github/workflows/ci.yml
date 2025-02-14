@@ -3,28 +3,32 @@ on: push
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
 
 jobs:
-  npm-build:
+  deploy:
     name: npm-build工作
     runs-on: ubuntu-latest
-
     steps:
-    - name: 读取仓库内容
-      uses: actions/checkout@v4
+      - name: 读取仓库内容
+        uses: actions/checkout@v4
 
-    - name: 安装pnpm全局依赖
-      run:
-        npm install -g pnpm
+      - name: 安装pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
 
-    - name: 安装项目依赖和项目打包
-      run:
-        pnpm install && pnpm run build
+      - name: 安装项目依赖
+        run:
+          pnpm install
 
-    - name: 部署
-      uses: JamesIves/github-pages-deploy-action@v4
-      with:
-        ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-        BRANCH: gh-pages
-        FOLDER: dist
-        BUILD_SCRIPT: pnpm run preview
+      - name: 构建项目/项目打包
+        run: pnpm build
+
+      - name: 部署到GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          access_token: ${{ secrets.ACCESS_TOKEN }}
+          branch: gh-pages
+          folder: dist
