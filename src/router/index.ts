@@ -60,6 +60,7 @@ routes.push({ // 登录页
 console.log("import.meta.env.BASE_URL: ", import.meta.env.BASE_URL);
 
 export default createRouter({
-    history: createWebHistory(import.meta.env.BASE_URL), // createWebHashHistory 路径加#号 createWebHistory 路径不加#
+    history: createWebHistory('wenzhi-vue'), // createWebHashHistory 路径加#号 createWebHistory 路径不加#
+    // history: createWebHistory(import.meta.env.BASE_URL), // createWebHashHistory 路径加#号 createWebHistory 路径不加#
     routes: routes,
 });
