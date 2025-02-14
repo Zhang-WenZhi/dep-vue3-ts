@@ -23,7 +23,8 @@ export default defineConfig({
       }
     }
   },
-  base: '/dep-vue3-ts/', // 必须与仓库名一致 // 核心配置项，控制资源路径
+  // base: '/dep-vue3-ts/', // 必须与仓库名一致 
+  base: './', // 核心配置项，控制资源路径
   build: {
     outDir: 'dist', // 默认构建目录
     // assetsDir: 'assets', // 静态资源目录
