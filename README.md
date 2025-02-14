@@ -25,3 +25,11 @@ git add .
 git commit -m "INIT"
 git push --set-upstream origin main
 ```
+
+## 编译启动
+
+```shell
+rm -rf dist && pnpm build
+npx serve dist -l 50862 --single
+
+```
