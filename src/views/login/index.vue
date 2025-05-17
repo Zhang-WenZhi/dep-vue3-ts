@@ -54,7 +54,22 @@ const formState = reactive<FormState>({
     password: 'admin',
     remember: true,
 });
-const onFinish = (values: any) => {
+interface OnFinishValues {
+    username: string;
+    password: string;
+    remember: boolean;
+}
+
+interface ErrorField {
+    name: string | number | (string | number)[];
+    errors: string[];
+}
+
+interface OnFinishFailedErrorInfo {
+    error: { errorFields: ErrorField[] };
+}
+
+const onFinish = (values: OnFinishValues) => {
     // values 就是输入的 formState
     console.log('values:', values);
     if (values.username === 'admin' && values.password === 'admin') {
@@ -70,9 +85,9 @@ const onFinish = (values: any) => {
 
 };
 
-const onFinishFailed = (errorInfo: any) => {
+const onFinishFailed = (errorInfo: OnFinishFailedErrorInfo) => {
     console.log('Failed:', errorInfo);
-    message.error(errorInfo);
+    message.error(errorInfo.error);
 };
 const disabled = computed(() => {
     return !(formState.username && formState.password);

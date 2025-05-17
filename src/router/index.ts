@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router';
+import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 
 
 // vue-cli + webpack 可以用request.context
@@ -11,7 +11,7 @@ console.log("pageModules: ", pageModules);
 const compoModules: Record<string, () => Promise<unknown>> = import.meta.glob('@/views/**/index.vue');
 console.log("compoModules: ", compoModules);
 // : Array<RouteRecordRaw>
-const routes: any = Object.entries(pageModules).map(([pagePath, config]) => {
+const routes: RouteRecordRaw[] = Object.entries(pageModules).map(([pagePath, config]) => {
     console.log("pagePath: ", pagePath);
     console.log("config: ", config);
     // 第一个replace不管用！
@@ -29,7 +29,7 @@ const routes: any = Object.entries(pageModules).map(([pagePath, config]) => {
         path: path,
         name: name,
         component: compoModules[compoPath],
-        meta: config,
+        meta: typeof config === 'string' ? JSON.parse(config) : config,
         children: [],
     }
 });
