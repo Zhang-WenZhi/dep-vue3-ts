@@ -87,7 +87,8 @@ const onFinish = (values: OnFinishValues) => {
 
 const onFinishFailed = (errorInfo: OnFinishFailedErrorInfo) => {
     console.log('Failed:', errorInfo);
-    message.error(errorInfo.error);
+    const firstErrorMessage = errorInfo.error.errorFields[0]?.errors[0];
+    message.error(firstErrorMessage || '表单提交失败，请检查输入内容');
 };
 const disabled = computed(() => {
     return !(formState.username && formState.password);
