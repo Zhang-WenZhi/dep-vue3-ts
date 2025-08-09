@@ -77,6 +77,7 @@ const getRandomGradientStyle = () => {
 };
 // 循环渲染时，为每个卡片生成独立的随机渐变样式
 const getCardStyle = (index: number) => {
+    console.log(index);
   // 每次调用重新生成随机样式，确保每张卡片背景独特
   return getRandomGradientStyle(); 
 };

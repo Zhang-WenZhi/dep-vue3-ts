@@ -156,9 +156,9 @@ const handleMenuClick = (e: any) => {
 // };
 
 // 跳转到推荐教程
-const goToRecommended = () => {
-  router.push('/python-tutorial/flask');
-};
+// const goToRecommended = () => {
+//   router.push('/python-tutorial/flask');
+// };
 
 // 动态生成面包屑项
 const breadcrumbItems = computed(() => {

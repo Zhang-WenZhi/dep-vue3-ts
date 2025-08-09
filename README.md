@@ -34,7 +34,7 @@ npx serve dist -l 50862 --single
 github action vite只能./
 ```
 
-## 更新以来
+## 更新依赖
 
 ```shell
 # 更新所有依赖到最新版本（遵循 package.json 中的版本范围）

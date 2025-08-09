@@ -15,7 +15,7 @@
 <script setup lang="ts">
   import BlurText from "./BlurText.vue";
 
-  const handleAnimationComplete = () => {
-    console.log('All animations complete!');,
-});
+const handleAnimationComplete = () => {
+    console.log('All animations complete!');
+};
 </script>
