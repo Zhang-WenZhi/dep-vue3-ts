@@ -12,8 +12,8 @@
 
 // }
 import zhCN from "ant-design-vue/es/locale/zh_CN";
-
 console.log('App router-view 路由导航！');
 </script>
 
-<style scoped></style>
+<style scoped>
+</style>

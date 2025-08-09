@@ -33,3 +33,22 @@ rm -rf dist && pnpm build
 npx serve dist -l 50862 --single
 github action vite只能./
 ```
+
+## 更新以来
+
+```shell
+# 更新所有依赖到最新版本（遵循 package.json 中的版本范围）
+pnpm update
+
+# 强制更新所有依赖到最新版本（忽略 package.json 中的版本范围限制）
+pnpm update --latest
+
+更新指定依赖：pnpm update <package-name>（如 pnpm update vue）
+
+查看可更新的依赖：pnpm outdated
+
+
+// useTemplateRef 是 Vue 3.5+ 引入的 API，若项目使用的 Vue 版本低于 3.5，则 TypeScript 无法识别该导出，导致报错。
+import { onMounted, withDefaults, useTemplateRef } from 'vue';
+// 重启vscode, vscode才生效
+```

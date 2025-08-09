@@ -1,39 +1,41 @@
 <template>
-    <div class="login-container">
-        <a-form :model="formState" name="normal_login" class="login-form" @finish="onFinish"
-            @finishFailed="onFinishFailed">
-            <a-form-item label="用户名称" name="username" :rules="[{ required: true, message: '请输入用户名!' }]">
-                <a-input v-model:value="formState.username">
-                    <template #prefix>
-                        <UserOutlined class="site-form-item-icon" />
-                    </template>
-                </a-input>
-            </a-form-item>
-
-            <a-form-item label="用户密码" name="password" :rules="[{ required: true, message: '请输入密码!' }]">
-                <a-input-password v-model:value="formState.password">
-                    <template #prefix>
-                        <LockOutlined class="site-form-item-icon" />
-                    </template>
-                </a-input-password>
-            </a-form-item>
-
-            <a-form-item>
-                <a-form-item name="remember" no-style>
-                    <a-checkbox v-model:checked="formState.remember">记住密码</a-checkbox>
+     <div class="login-container">
+            <a-form :model="formState" name="normal_login" class="login-form" @finish="onFinish"
+                @finishFailed="onFinishFailed">
+                <a-form-item label="用户名称" name="username" :rules="[{ required: true, message: '请输入用户名!' }]">
+                    <a-input v-model:value="formState.username">
+                        <template #prefix>
+                            <UserOutlined class="site-form-item-icon" />
+                        </template>
+                    </a-input>
                 </a-form-item>
-                <a class="login-form-forgot" href="">忘记密码</a>
-            </a-form-item>
 
-            <a-form-item>
-                <a-button :disabled="disabled" type="primary" html-type="submit" class="login-form-button">
-                    登录
-                </a-button>
-                或者
-                <a href="">注册</a>
-            </a-form-item>
-        </a-form>
-    </div>
+                <a-form-item label="用户密码" name="password" :rules="[{ required: true, message: '请输入密码!' }]">
+                    <a-input-password v-model:value="formState.password">
+                        <template #prefix>
+                            <LockOutlined class="site-form-item-icon" />
+                        </template>
+                    </a-input-password>
+                </a-form-item>
+
+                <a-form-item>
+                    <a-form-item name="remember" no-style>
+                        <a-checkbox v-model:checked="formState.remember">记住密码</a-checkbox>
+                    </a-form-item>
+                    <a class="login-form-forgot" href="">忘记密码</a>
+                </a-form-item>
+
+                <a-form-item>
+                    <a-button :disabled="disabled" type="primary" html-type="submit" class="login-form-button">
+                        登录
+                    </a-button>
+                    或者
+                    <a href="">注册</a>
+                </a-form-item>
+            </a-form>
+        </div>
+        <!-- <UsageOrb /> -->
+
 </template>
 
 <script lang="ts" setup>
@@ -41,6 +43,7 @@ import { reactive, computed } from 'vue';
 import { UserOutlined, LockOutlined } from '@ant-design/icons-vue';
 import { message } from 'ant-design-vue';
 import { useRouter } from 'vue-router';
+// import UsageOrb from '@/components/cursor/UsageOrb.vue';
 
 const router = useRouter();
 
