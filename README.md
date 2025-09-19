@@ -52,3 +52,30 @@ pnpm update --latest
 import { onMounted, withDefaults, useTemplateRef } from 'vue';
 // 重启vscode, vscode才生效
 ```
+
+## git + node  version
+
+```shell
+node=v22.14.0 # apple
+```
+
+```shell
+git init
+git commit -m "xxx"
+git remote add origin 远程仓库地址
+# 示例：git remote add origin https://github.com/你的用户名/仓库名.git
+# 首次推送需要指定分支（通常是main或master）
+git push -u origin main
+# 后续推送可简化为：git push
+git pull --set-upstream-to=origin/main main
+
+git checkout -b main
+# 全局设置（一次配置，所有仓库生效）
+# 全局设置为合并模式
+git config --global pull.rebase false
+# 或全局设置为变基模式
+git config --global pull.rebase true
+git pull
+#   ######## 输入邮箱账号及生成的个人访问令牌 ########
+git push --set-upstream origin main
+```
