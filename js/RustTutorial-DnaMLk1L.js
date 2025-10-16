@@ -1,0 +1,1 @@
+import{_ as t}from"./_plugin-vue_export-helper-DlAUqK2U.js";import{j as e,o}from"./vendor-CXh5bITq.js";const r={};function c(n,s){return o(),e("div",null," Rust 教程来了！！！ ")}const f=t(r,[["render",c]]);export{f as default};

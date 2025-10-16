@@ -1,0 +1,1 @@
+import{_ as e}from"./_plugin-vue_export-helper-DlAUqK2U.js";import{j as o,o as r}from"./vendor-CXh5bITq.js";const c={};function t(n,s){return r(),o("div",null," Flask 教程来了！！！ ")}const l=e(c,[["render",t]]);export{l as default};

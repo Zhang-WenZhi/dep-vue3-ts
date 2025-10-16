@@ -1,1 +1,0 @@
-import{_ as o}from"./_plugin-vue_export-helper-DlAUqK2U.js";import{j as e,o as n}from"./vendor-iwKOTlxO.js";const r={};function c(t,a){return n(),e("div",null," Django 教程来了！！！ ")}const f=o(r,[["render",c]]);export{f as default};
