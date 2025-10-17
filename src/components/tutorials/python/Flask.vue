@@ -129,13 +129,13 @@ import {
   LeftOutlined,
   RightOutlined
 } from '@ant-design/icons-vue';
-import { 
-  Layout, 
-  Menu, 
-  Dropdown, 
-  Button,
-  MenuProps 
-} from 'ant-design-vue';
+// import { 
+//   Layout, 
+//   Menu, 
+//   Dropdown, 
+//   Button,
+//   MenuProps 
+// } from 'ant-design-vue';
 
 // 状态管理
 const isCatalogShow = ref(true); // 目录显示状态
@@ -162,13 +162,13 @@ const readingProgress = computed(() => {
 });
 
 // 字体大小变更
-const handleFontSizeChange = ({ key }: MenuProps['onClick']) => {
+const handleFontSizeChange = ({ key }: { key: string }) => {
   fontSize.value = key as 'small' | 'normal' | 'large' | 'xlarge';
 };
 
 // 章节切换
-const handleChapterChange = ({ key }: MenuProps['onClick']) => {
-  currentChapterKey.value = key as string;
+const handleChapterChange = ({ key }: { key: string }) => {
+  currentChapterKey.value = key;
   currentPage.value = 1; // 切换章节重置到第一页
 };
 </script>
