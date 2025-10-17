@@ -4,25 +4,30 @@
       <a-layout-header :style="headerStyle">
         <a-space>
           <div class="logo">
-            <a href="https://vitejs.dev" target="_blank">
-              <img src="/vite.svg" class="logo" alt="Vite logo" />
-            </a>
+            <!-- <a href="https://vitejs.dev" target="_blank">
+              <img src="/vite.svg" class="logo" alt="Vite logo"/>
+            </a> -->
+            <img src="/vite.svg" class="logo" alt="Vite logo" @click="handleHomeClick" style="cursor: pointer" />
           </div>
-          <a-menu v-model:selectedKeys="current" mode="horizontal" :items="items" @click="handleMenuClick"/>
+          <a-menu v-model:selectedKeys="current" mode="horizontal" :items="items" @click="handleMenuClick" />
         </a-space>
       </a-layout-header>
+
       <a-layout-content :style="contentStyle">
         <a-breadcrumb :style="{ margin: '16px 0' }">
           <!-- <a-breadcrumb-item>Home</a-breadcrumb-item>
           <a-breadcrumb-item>List</a-breadcrumb-item>
           <a-breadcrumb-item>App</a-breadcrumb-item> -->
-          <SendOutlined /><SendOutlined /><SendOutlined />
-          <a-breadcrumb-item 
-            v-for="(item, index) in breadcrumbItems" 
-            :key="item.path"
-            :href="index === breadcrumbItems.length - 1 ? undefined : item.path"
-          >
+          <!-- 将图标放在 Breadcrumb.Item 内部 -->
+          <a-breadcrumb-item>
+            <SendOutlined />
+            <SendOutlined />
+            <SendOutlined />
+          </a-breadcrumb-item>
+          <a-breadcrumb-item v-for="(item, index) in breadcrumbItems" :key="item.path"
+            :href="index === breadcrumbItems.length - 1 ? undefined : item.path">
             {{ item.meta.title }}
+            <!-- <a-bread -->
           </a-breadcrumb-item>
           <!-- 动态面包屑 -->
           <!-- <a-breadcrumb-item 
@@ -34,7 +39,7 @@
             {{ item.meta.title }}
           </a-breadcrumb-item> -->
         </a-breadcrumb>
-        <div :style="{ background: '#fff', padding: '24px', minHeight: '380px' }">
+        <div :style="{ background: '#fff', padding: '24px', minHeight: '600px' }">
           <!-- 判断路由是否有匹配项，没有则显示默认页 -->
           <!-- <template v-if="route.matched.length > 0">
             <router-view />
@@ -106,6 +111,13 @@ const allowedRoutes = [
   '/typescript-javascript/vue3'
 ];
 
+const handleHomeClick = () => {
+  console.log("handleHomeClick:::");
+  // 可以添加额外逻辑
+  router.push('/home')
+}
+
+
 // 判断当前路由是否在允许列表中
 const isRouteAllowed = computed(() => {
   // 检查当前路由是否在允许的路由列表中
@@ -116,7 +128,7 @@ const isRouteAllowed = computed(() => {
 const handleMenuClick = (e: any) => {
   console.log('click:::', e);
   // 根据不同的key导航到不同的路由
-  switch(e.key) {
+  switch (e.key) {
     case 'c-plus-plus':
       router.push('/cpp-tutorial');
       break;
@@ -146,7 +158,7 @@ const handleMenuClick = (e: any) => {
     default:
       router.push('/rust-tutorial');
       break;
-    
+
   }
 };
 
@@ -357,5 +369,4 @@ const footerStyle = {
 // export {};
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>
