@@ -1,0 +1,1 @@
+import{_ as o}from"./_plugin-vue_export-helper-DlAUqK2U.js";import{j as e,o as r}from"./vendor-USUNXSa6.js";const t={};function c(n,a){return r(),e("div",null," GO 教程来了！！！ ")}const f=o(t,[["render",c]]);export{f as default};

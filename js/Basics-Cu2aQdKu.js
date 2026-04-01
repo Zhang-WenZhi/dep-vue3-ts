@@ -1,1 +1,0 @@
-import{_ as c}from"./_plugin-vue_export-helper-DlAUqK2U.js";import{j as e,o}from"./vendor-BVFDDkQI.js";const r={};function s(t,n){return o(),e("div",null," Bacics 教程来了！！！ ")}const f=c(r,[["render",s]]);export{f as default};
