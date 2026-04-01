@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>匆匆那年 - 吉他谱</title>
+  <!-- 引入Tailwind CSS (国内镜像) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- 引入Font Awesome (字节跳动镜像) -->
+  <link href="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <!-- 引入Angular (国内镜像) -->
+  <script src="https://cdn.jsdelivr.net/npm/@angular/core@16.2.0/bundles/core.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@angular/common@16.2.0/bundles/common.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@angular/compiler@16.2.0/bundles/compiler.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@angular/platform-browser@16.2.0/bundles/platform-browser.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@angular/platform-browser-dynamic@16.2.0/bundles/platform-browser-dynamic.umd.min.js"></script>
+  <!-- 引入RxJS (国内镜像) -->
+  <script src="https://cdn.jsdelivr.net/npm/rxjs@7.8.1/dist/rxjs.umd.min.js"></script>
+  <!-- 引入VexFlow (国内加速) -->
+  <script src="https://cdn.jsdelivr.net/npm/vexflow@4.2.4/build/cjs/vexflow-min.js"></script>
+  
+  <!-- 配置Tailwind -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#8B5A2B',     // 吉他木色
+            secondary: '#D2B48C',   // 浅木色
+            accent: '#CD853F',      // 突出色
+            dark: '#3E2723',        // 深色文字
+            light: '#F5F5DC',       // 浅色背景
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          },
+        },
+      }
+    }
+  </script>
+  
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .content-auto {
+        content-visibility: auto;
+      }
+      .text-shadow {
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+      }
+      .chord-highlight {
+        transition: all 0.3s ease;
+      }
+      .chord-highlight:hover {
+        transform: scale(1.1);
+        background-color: rgba(210, 180, 140, 0.3);
+      }
+    }
+  </style>
+</head>
+<body class="bg-light min-h-screen text-dark font-sans">
+  <app-root class="max-w-5xl mx-auto px-4 py-8"></app-root>
+
+  <script type="text/typescript">
+    // 定义和弦数据接口
+    interface Chord {
+      name: string;
+      fingers: { string: number; fret: number; finger: number }[];
+      baseFret: number;
+      barres?: number[];
+    }
+    
+    // 定义歌词与和弦数据接口
+    interface LyricLine {
+      chord: string;
+      text: string;
+    }
+
+    // 和弦数据
+    const chordData: { [key: string]: Chord } = {
+      'C': {
+        name: 'C',
+        fingers: [
+          { string: 2, fret: 1, finger: 1 },
+          { string: 4, fret: 2, finger: 2 },
+          { string: 5, fret: 3, finger: 3 }
+        ],
+        baseFret: 0
+      },
+      'G': {
+        name: 'G',
+        fingers: [
+          { string: 1, fret: 3, finger: 3 },
+          { string: 2, fret: 3, finger: 4 },
+          { string: 6, fret: 3, finger: 2 },
+          { string: 5, fret: 2, finger: 1 }
+        ],
+        baseFret: 0
+      },
+      'Am': {
+        name: 'Am',
+        fingers: [
+          { string: 2, fret: 1, finger: 1 },
+          { string: 3, fret: 2, finger: 2 }
+        ],
+        baseFret: 0
+      },
+      'F': {
+        name: 'F',
+        fingers: [
+          { string: 1, fret: 1, finger: 1 },
+          { string: 2, fret: 2, finger: 2 },
+          { string: 3, fret: 3, finger: 3 }
+        ],
+        baseFret: 1,
+        barres: [1]
+      }
+    };
+
+    // 歌词与和弦数据
+    const lyricsData: LyricLine[] = [
+      { chord: 'C', text: '匆匆那年我们究竟说了几遍 再见' },
+      { chord: 'G', text: '再见之后再拖延' },
+      { chord: 'Am', text: '可惜谁有没有 爱过不是一场 七情上面的雄辩' },
+      { chord: 'F', text: '匆匆那年我们一时匆忙撂下 难以承受的诺言' },
+      { chord: 'C', text: '只有等别人兑现' },
+      { chord: 'G', text: '不怪那吻痕还 没积累成茧' },
+      { chord: 'Am', text: '拥抱着冬眠也没能 羽化再成仙' },
+      { chord: 'F', text: '不怪这一段情 没空反复再排练' },
+      { chord: 'C', text: '是岁月宽容恩赐 反悔的时间' }
+    ];
+
+    // 和弦图表组件
+    class ChordDiagramComponent {
+      static get annotations() {
+        return [
+          new ng.core.Component({
+            selector: 'chord-diagram',
+            inputs: ['chordName'],
+            template: `<div #diagram class="chord-diagram mx-auto"></div>`
+          })
+        ];
+      }
+
+      chordName: string;
+      private diagramRef: ElementRef;
+
+      constructor(@ng.core.Inject(ng.core.ElementRef) elementRef: ng.core.ElementRef) {
+        this.diagramRef = elementRef.nativeElement.querySelector('#diagram');
+      }
+
+      ngOnChanges() {
+        if (!this.chordName || !chordData[this.chordName]) return;
+        
+        const chord = chordData[this.chordName];
+        const el = this.diagramRef;
+        el.innerHTML = ''; // 清空现有内容
+        
+        // 创建SVG元素
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.setAttribute('width', '100');
+        svg.setAttribute('height', '100');
+        svg.setAttribute('viewBox', '0 0 100 100');
+        
+        // 绘制指板
+        const board = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+        board.setAttribute('x', '10');
+        board.setAttribute('y', '10');
+        board.setAttribute('width', '80');
+        board.setAttribute('height', '80');
+        board.setAttribute('fill', '#f5f0e0');
+        board.setAttribute('stroke', '#8B5A2B');
+        board.setAttribute('stroke-width', '2');
+        svg.appendChild(board);
+        
+        // 绘制品位线
+        const numFrets = 4;
+        for (let i = 0; i <= numFrets; i++) {
+          const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+          const y = 10 + (80 / numFrets) * i;
+          line.setAttribute('x1', '10');
+          line.setAttribute('y1', y);
+          line.setAttribute('x2', '90');
+          line.setAttribute('y2', y);
+          line.setAttribute('stroke', '#8B5A2B');
+          line.setAttribute('stroke-width', i === 0 ? 4 : 2);
+          svg.appendChild(line);
+        }
+        
+        // 绘制琴弦
+        for (let i = 0; i < 6; i++) {
+          const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+          const x = 20 + (15 * i);
+          line.setAttribute('x1', x);
+          line.setAttribute('y1', '10');
+          line.setAttribute('x2', x);
+          line.setAttribute('y2', '90');
+          line.setAttribute('stroke', '#333');
+          line.setAttribute('stroke-width', 1);
+          svg.appendChild(line);
+        }
+        
+        // 绘制品位标记
+        if (chord.baseFret > 0) {
+          const fretLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+          fretLabel.setAttribute('x', '50');
+          fretLabel.setAttribute('y', '15');
+          fretLabel.setAttribute('text-anchor', 'middle');
+          fretLabel.setAttribute('font-size', '12');
+          fretLabel.setAttribute('fill', '#333');
+          fretLabel.textContent = `第${chord.baseFret}品`;
+          svg.appendChild(fretLabel);
+        }
+        
+        // 绘制横按
+        if (chord.barres && chord.barres.length > 0) {
+          chord.barres.forEach(fret => {
+            const barre = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+            const adjustedFret = fret - chord.baseFret;
+            const y = 10 + (80 / numFrets) * adjustedFret + 5;
+            barre.setAttribute('x', '15');
+            barre.setAttribute('y', y);
+            barre.setAttribute('width', '70');
+            barre.setAttribute('height', '10');
+            barre.setAttribute('rx', '5');
+            barre.setAttribute('fill', '#CD853F');
+            barre.setAttribute('stroke', '#8B5A2B');
+            barre.setAttribute('stroke-width', '1');
+            svg.appendChild(barre);
+          });
+        }
+        
+        // 绘制手指位置
+        chord.fingers.forEach(note => {
+          if (note.fret === 0) return;
+          
+          const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+          const stringIndex = 6 - note.string;
+          const adjustedFret = note.fret - chord.baseFret;
+          
+          const x = 20 + (15 * stringIndex);
+          const y = 10 + (80 / numFrets) * adjustedFret + 10;
+          
+          dot.setAttribute('cx', x);
+          dot.setAttribute('cy', y);
+          dot.setAttribute('r', '6');
+          dot.setAttribute('fill', '#8B5A2B');
+          
+          // 手指编号
+          const fingerText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+          fingerText.setAttribute('x', x);
+          fingerText.setAttribute('y', y + 4);
+          fingerText.setAttribute('text-anchor', 'middle');
+          fingerText.setAttribute('font-size', '10');
+          fingerText.setAttribute('fill', 'white');
+          fingerText.textContent = note.finger;
+          
+          svg.appendChild(dot);
+          svg.appendChild(fingerText);
+        });
+        
+        el.appendChild(svg);
+      }
+    }
+
+    // 六线谱组件
+    class TablatureComponent {
+      static get annotations() {
+        return [
+          new ng.core.Component({
+            selector: 'tablature',
+            template: `<div #tabContainer class="w-full overflow-x-auto bg-white p-4 rounded-lg shadow-md"></div>`
+          })
+        ];
+      }
+
+      private tabContainer: ElementRef;
+
+      constructor(@ng.core.Inject(ng.core.ElementRef) elementRef: ng.core.ElementRef) {
+        this.tabContainer = elementRef.nativeElement.querySelector('#tabContainer');
+      }
+
+      ngAfterViewInit() {
+        if (!this.tabContainer) return;
+        
+        const { Vex } = window;
+        const { Renderer, Beam, TabNote, TabStave } = Vex.Flow;
+        
+        // 创建渲染器
+        const div = this.tabContainer;
+        const renderer = new Renderer(div, Renderer.Backends.SVG);
+        
+        // 设置尺寸
+        renderer.resize(1200, 300);
+        const context = renderer.getContext();
+        
+        // 创建六线谱
+        const tabStave = new TabStave(10, 40, 1100);
+        tabStave.addClef('treble');
+        tabStave.setContext(context).draw();
+        
+        // 定义音符 - 匆匆那年片段
+        const notes = [
+          // 第一小节 C和弦
+          new TabNote({ positions: [{ line: 5 }, { line: 3 }, { line: 2 }, { line: 0 }], duration: '8', stroke: 'up' }),
+          new TabNote({ positions: [{ line: 5 }, { line: 3 }, { line: 2 }, { line: 0 }], duration: '8', stroke: 'down' }),
+          new TabNote({ positions: [{ line: 5 }, { line: 3 }, { line: 2 }, { line: 0 }], duration: '4', stroke: 'up' }),
+          
+          // 第二小节 C和弦
+          new TabNote({ positions: [{ line: 5 }, { line: 3 }, { line: 2 }, { line: 0 }], duration: '8', stroke: 'down' }),
+          new TabNote({ positions: [{ line: 5 }, { line: 3 }, { line: 2 }, { line: 0 }], duration: '8', stroke: 'up' }),
+          new TabNote({ positions: [{ line: 5 }, { line: 3 }, { line: 2 }, { line: 0 }], duration: '4', stroke: 'down' }),
+          
+          // 第三小节 G和弦
+          new TabNote({ positions: [{ line: 4 }, { line: 3 }, { line: 2 }, { line: 1 }], duration: '8', stroke: 'up' }),
+          new TabNote({ positions: [{ line: 4 }, { line: 3 }, { line: 2 }, { line: 1 }], duration: '8', stroke: 'down' }),
+          new TabNote({ positions: [{ line: 4 }, { line: 3 }, { line: 2 }, { line: 1 }], duration: '4', stroke: 'up' }),
+          
+          // 第四小节 Am和弦
+          new TabNote({ positions: [{ line: 5 }, { line: 3 }, { line: 2 }], duration: '8', stroke: 'down' }),
+          new TabNote({ positions: [{ line: 5 }, { line: 3 }, { line: 2 }], duration: '8', stroke: 'up' }),
+          new TabNote({ positions: [{ line: 5 }, { line: 3 }, { line: 2 }], duration: '4', stroke: 'down' })
+        ];
+        
+        // 绘制音符
+        const voice = new Vex.Flow.Voice({
+          num_beats: 4,
+          beat_value: 4,
+          resolution: Vex.Flow.RESOLUTION
+        });
+        
+        voice.addTickables(notes);
+        const beams = Beam.generateBeams(notes);
+        new Vex.Flow.Formatter().joinVoices([voice]).format([voice], 1000);
+        voice.draw(context, tabStave);
+        beams.forEach(beam => beam.setContext(context).draw());
+        
+        // 添加和弦标记
+        const chordPositions = [50, 350, 650, 950];
+        const chordNames = ['C', 'C', 'G', 'Am'];
+        
+        chordNames.forEach((name, i) => {
+          context.save();
+          context.setFont('Arial', 16, 'bold');
+          context.fillStyle = '#8B5A2B';
+          context.fillText(name, chordPositions[i], 30);
+          context.restore();
+        });
+      }
+    }
+
+    // 主应用组件
+    class AppComponent {
+      static get annotations() {
+        return [
+          new ng.core.Component({
+            selector: 'app-root',
+            template: `
+              <!-- 页面标题区域 -->
+              <header class="text-center mb-10">
+                <h1 class="text-[clamp(2rem,5vw,3.5rem)] font-bold text-primary mb-2 text-shadow">匆匆那年</h1>
+                <p class="text-gray-600 text-lg">王菲 / 吉他谱</p>
+                <div class="flex justify-center items-center mt-4 space-x-2 text-sm text-gray-500">
+                  <span class="px-3 py-1 bg-secondary/30 rounded-full">C调</span>
+                  <span class="px-3 py-1 bg-secondary/30 rounded-full">拍号 4/4</span>
+                  <span class="px-3 py-1 bg-secondary/30 rounded-full">难度 中等</span>
+                </div>
+              </header>
+              
+              <!-- 控制区域 -->
+              <div class="flex flex-wrap justify-center gap-4 mb-8 p-4 bg-white/50 rounded-lg shadow-md">
+                <button 
+                  (click)="playPause()" 
+                  class="flex items-center gap-2 px-6 py-2 bg-primary text-white rounded-full hover:bg-primary/80 transition-all"
+                >
+                  <i class="fa" [ngClass]="isPlaying ? 'fa-pause' : 'fa-play'"></i>
+                  <span>{{ isPlaying ? '暂停' : '播放' }}</span>
+                </button>
+                <button (click)="speedDown()" class="p-2 bg-white rounded-full hover:bg-gray-100 transition-all">
+                  <i class="fa fa-minus"></i>
+                </button>
+                <span class="flex items-center px-3 py-1 bg-white rounded-full">
+                  速度: {{ playbackSpeed | number:'1.1-1' }}x
+                </span>
+                <button (click)="speedUp()" class="p-2 bg-white rounded-full hover:bg-gray-100 transition-all">
+                  <i class="fa fa-plus"></i>
+                </button>
+                <button (click)="toggleFullscreen()" class="ml-4 px-4 py-2 bg-secondary/70 rounded-full hover:bg-secondary transition-all">
+                  <i class="fa fa-expand mr-1"></i> 全屏
+                </button>
+              </div>
+              
+              <!-- 和弦图表区域 -->
+              <section class="mb-10">
+                <h2 class="text-xl font-semibold mb-4 text-primary border-b border-secondary pb-2">和弦图表</h2>
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                  <div *ngFor="let chord of chords" class="chord-highlight p-3 bg-white rounded-lg shadow-sm text-center">
+                    <h3 class="font-bold text-lg mb-2">{{ chord }}</h3>
+                    <chord-diagram [chordName]="chord"></chord-diagram>
+                  </div>
+                </div>
+              </section>
+              
+              <!-- 歌词与和弦区域 -->
+              <section class="mb-12 bg-white rounded-xl shadow-md p-6">
+                <h2 class="text-xl font-semibold mb-6 text-primary border-b border-secondary pb-2">歌词与和弦</h2>
+                <div class="text-lg leading-loose space-y-4">
+                  <p *ngFor="let item of lyricsData; let i = index" class="flex flex-wrap">
+                    <span class="mr-2 font-bold text-accent">[{{ item.chord }}]</span>
+                    <span>{{ item.text }}</span>
+                  </p>
+                </div>
+              </section>
+              
+              <!-- 六线谱区域 -->
+              <section class="mb-10">
+                <h2 class="text-xl font-semibold mb-4 text-primary border-b border-secondary pb-2">六线谱</h2>
+                <tablature></tablature>
+              </section>
+              
+              <!-- 页脚 -->
+              <footer class="text-center text-gray-500 text-sm py-6">
+                <p>© 2023 吉他谱展示 | 使用Angular和VexFlow构建</p>
+              </footer>
+            `,
+            directives: [ChordDiagramComponent, TablatureComponent]
+          })
+        ];
+      }
+
+      isPlaying: boolean = false;
+      playbackSpeed: number = 1.0;
+      chords: string[] = ['C', 'G', 'Am', 'F'];
+      lyricsData: LyricLine[] = lyricsData;
+      
+      // 播放/暂停控制
+      playPause() {
+        this.isPlaying = !this.isPlaying;
+        if (this.isPlaying) {
+          console.log('开始播放，速度:', this.playbackSpeed);
+        } else {
+          console.log('停止播放');
+        }
+      }
+      
+      // 调整播放速度
+      speedUp() {
+        this.playbackSpeed = Math.min(this.playbackSpeed + 0.1, 2.0);
+      }
+      
+      speedDown() {
+        this.playbackSpeed = Math.max(this.playbackSpeed - 0.1, 0.5);
+      }
+      
+      // 全屏切换
+      toggleFullscreen() {
+        const docEl = document.documentElement;
+        if (!document.fullscreenElement) {
+          docEl.requestFullscreen().catch(err => {
+            console.error(`全屏请求错误: ${err.message}`);
+          });
+        } else {
+          if (document.exitFullscreen) {
+            document.exitFullscreen();
+          }
+        }
+      }
+    }
+
+    // 定义应用模块
+    class AppModule {
+      static get annotations() {
+        return [
+          new ng.core.NgModule({
+            declarations: [AppComponent, ChordDiagramComponent, TablatureComponent],
+            bootstrap: [AppComponent]
+          })
+        ];
+      }
+    }
+
+    // 启动应用
+    document.addEventListener('DOMContentLoaded', function() {
+      ng.platformBrowserDynamic.platformBrowserDynamic().bootstrapModule(AppModule);
+    });
+  </script>
+</body>
+</html>

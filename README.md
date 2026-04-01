@@ -79,3 +79,16 @@ git pull
 #   ######## 输入邮箱账号及生成的个人访问令牌 ########
 git push --set-upstream origin main
 ```
+
+
+## VS Code 生成插件列表文件 extensions.txt
+
+```bash
+# 生成插件列表文件 extensions.txt
+code --list-extensions > extensions.txt
+# 新电脑上批量安装插件
+# 一键安装
+code --list-extensions | foreach { code --install-extension $_ }
+# 逐行安装
+cat extensions.txt | xargs -L 1 code --install-extension
+```
