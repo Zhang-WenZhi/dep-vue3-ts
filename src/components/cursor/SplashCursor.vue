@@ -6,7 +6,8 @@
 
 <script setup lang="ts">
 // useTemplateRef 是 Vue 3.5+ 引入的 API，若项目使用的 Vue 版本低于 3.5，则 TypeScript 无法识别该导出，导致报错。
-import { onMounted, withDefaults, useTemplateRef } from 'vue';
+// withDefaults
+import { onMounted, useTemplateRef } from 'vue';
 
 /* ---------- types ---------- */
 interface ColorRGB {
@@ -33,6 +34,7 @@ interface SplashCursorProps {
 }
 
 /* ---------- props & defaults ---------- */
+// Vue 内置宏: withDefaults 和 defineProps、defineEmits 一样，直接用，不导入！
 const props = withDefaults(defineProps<SplashCursorProps>(), {
   SIM_RESOLUTION: 128,
   DYE_RESOLUTION: 1440,
